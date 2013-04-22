@@ -1,4 +1,10 @@
 #define F_CPU 8000000UL
+// Defining CPU frequency
+
+
+
+
+// initializing header files
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -20,40 +26,66 @@ void serial_begin();
 
 int main()
 {
-
+// Initializing input and output ports
 DDRB=0b00001111;
+
+DDRC=0b00000011;
 
 serial_begin();
 sei();
 
 while(1)
 {
-
+// for wireless control over the robot
 	if(msgbuffer=='w')
 	{
 	PORTB=0b00001010;
 	_delay_ms(10);
 	}
+
 	else if(msgbuffer=='s')
 	{
 	PORTB=0b00000101;
 	_delay_ms(10);
 	}
+
 	else if(msgbuffer=='a')
 	{
 	PORTB=0b00000110;
 	_delay_ms(10);
 	}
+
 	else if(msgbuffer=='d')
 	{
 	PORTB=0b00001001;
 	_delay_ms(10);
 	}
+	
+	else if(msgbuffer=='j')
+	{
+	PORTB=0b00000000;
+	_delay_ms(10);
+	PORTC=0b00000010;
+	_delay_ms(10);
+	}
+
+	else if(msgbuffer=='k')
+	{
+	PORTB=0b00000000;
+	_delay_ms(10);
+	PORTC=0b00000001;
+	_delay_ms(10);
+	}
+	
 	else if(msgbuffer=='l')
 	{
 	PORTB=0b00000000;
 	_delay_ms(10);
+	PORTC=0b00000000;
+	_delay_ms(10);
 	}
+	
+	
 }
 return 0;
 }
@@ -61,6 +93,7 @@ return 0;
 
 
 void serial_begin() 
+// serial data transmission begins
 {
 	UBRRH = (BAUD_PRESCALE >> 8);
 	UBRRL = BAUD_PRESCALE;
@@ -77,7 +110,7 @@ void serial_begin()
 
 
 
-
+// serial data receiving through interrupt
 ISR(USART_RXC_vect)
 {
 	msgbuffer = UDR;
